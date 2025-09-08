@@ -1,4 +1,5 @@
 # load("//caffe2/test/fb:defs.bzl", "define_tests")
+load("@fbsource//tools/build_defs:fbsource_utils.bzl", "is_fbcode")
 load("@fbcode_macros//build_defs:python_pytest.bzl", "python_pytest")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 
@@ -32,7 +33,7 @@ def define_arm_tests():
     for test_file in test_files:
         test_file_name = paths.basename(test_file)
         test_name = test_file_name.replace("test_", "").replace(".py", "")
-
+        
         python_pytest(
             name = test_name,
             srcs = [test_file],
@@ -44,7 +45,7 @@ def define_arm_tests():
                 "//executorch/kernels/quantized:custom_ops_generated_lib",
             ],
             deps = [
-                "//executorch/backends/arm/test:arm_tester",
+                "//executorch/backends/arm/test/tester/fb:arm_tester_fb" if is_fbcode else "//executorch/backends/arm/test:arm_tester",
                 "//executorch/backends/arm/test:conftest",
                 "//executorch/exir:lib",
                 "fbsource//third-party/pypi/pytest:pytest",
